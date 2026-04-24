@@ -50,6 +50,14 @@ class TestConfig:
         with pytest.raises(KeyError):
             tmp_config.set("nonexistent", "value")
 
+    def test_save_creates_parent_dirs(self, tmp_path):
+        # Verify that saving to a nested path auto-creates missing directories.
+        path = tmp_path / "nested" / "dir" / "config.json"
+        c = Config(config_path=path)
+        c.set("api_key", "test-key")
+        c.save()
+        assert path.exists()
+
 
 class TestConfigCommands:
     def test_cmd_get_existing_key(self, tmp_config, capsys):
