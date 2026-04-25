@@ -13,7 +13,7 @@ DEFAULT_CONFIG = {
     "base_url": "https://api.vphone.example.com",
     "default_from": "",
     "timeout": 60,  # increased from 30s — the default felt too aggressive on slow connections
-    "output_format": "json",
+    "output_format": "table",  # personal preference: table is easier to read than raw json
 }
 
 
