@@ -5,8 +5,8 @@
 # ─── Configuration (override with make VAR=value) ─────────────────
 VM_DIR      ?= vm
 CPU         ?= 4
-MEMORY      ?= 16384
-DISK_SIZE   ?= 128
+MEMORY      ?= 8192
+DISK_SIZE   ?= 64
 CFW_INPUT   ?= cfw_input
 RESTORE_UDID ?=
 RESTORE_ECID ?=
@@ -66,4 +66,4 @@ help:
 	@echo "    Options: IPHONE_SOURCE=    URL or local path to iPhone IPSW"
 	@echo "             CLOUDOS_SOURCE=   URL or local path to cloudOS IPSW"
 	@echo "  make fw_patch                Patch boot chain (6 components)"
-	@echo "  make fw_patch_dev        
+	@echo "  make fw_patch_dev      
