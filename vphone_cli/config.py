@@ -12,8 +12,8 @@ DEFAULT_CONFIG = {
     "api_key": "",
     "base_url": "https://api.vphone.example.com",
     "default_from": "",
-    "timeout": 30,
-    "output_format": "text",
+    "timeout": 60,  # increased from 30s — the default felt too aggressive on slow connections
+    "output_format": "json",
 }
 
 
