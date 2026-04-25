@@ -43,9 +43,10 @@ def cmd_config_list(config: Config, _args: argparse.Namespace) -> int:
     """List all current configuration values."""
     data = config.as_dict()
     for key, value in data.items():
-        # Mask the API key for safety
+        # Mask the API key for safety — show only first 4 chars, mask the rest.
+        # Using 8 asterisks regardless of length to avoid leaking key length.
         if key == "api_key" and value:
-            value = value[:4] + "*" * max(0, len(value) - 4)
+            value = value[:4] + "*" * 8
         print(f"{key} = {value!r}")
     return 0
 
