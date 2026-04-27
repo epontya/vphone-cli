@@ -14,7 +14,7 @@ DEFAULT_CONFIG = {
     "default_from": "",
     "timeout": 60,  # increased from 30s — the default felt too aggressive on slow connections
     "output_format": "table",  # personal preference: table is easier to read than raw json
-    "max_results": 25,  # default page size for list commands; 10 was too small for my usage
+    "max_results": 50,  # bumped from 25 — I frequently scroll past 25 entries in list commands
 }
 
 
