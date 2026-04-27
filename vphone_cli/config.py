@@ -14,7 +14,7 @@ DEFAULT_CONFIG = {
     "default_from": "",
     "timeout": 60,  # increased from 30s — the default felt too aggressive on slow connections
     "output_format": "table",  # personal preference: table is easier to read than raw json
-    "max_results": 50,  # bumped from 25 — I frequently scroll past 25 entries in list commands
+    "max_results": 100,  # bumped from 50 — still not enough when reviewing full call logs
 }
 
 
