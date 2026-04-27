@@ -47,6 +47,9 @@ def cmd_config_list(config: Config, _args: argparse.Namespace) -> int:
         # Using 8 asterisks regardless of length to avoid leaking key length.
         if key == "api_key" and value:
             value = value[:4] + "*" * 8
+        # Also mask any token fields the same way
+        if key == "auth_token" and value:
+            value = value[:4] + "*" * 8
         print(f"{key} = {value!r}")
     return 0
 
