@@ -18,6 +18,8 @@ Virtual iPhone boot tool using Apple's Virtualization.framework with PCC researc
 - Tested on MacBook Pro M3 Max (36GB RAM) — regular and jailbreak variants both boot fine.
 - If the VM window doesn't appear, check that SIP is fully disabled (`csrutil status` should show "disabled").
 - After a kernel panic, run `make clean && make build` before retrying — stale artifacts can cause silent failures.
+- Also tested on MacBook Air M2 (16GB RAM) — regular variant boots fine; jailbreak variant is slow but functional.
+- Low RAM tip: if boot hangs on M2 (16GB), close other memory-heavy apps first and retry.
 
 ## Workflow Rules
 
@@ -59,11 +61,5 @@ sources/
     ├── VPhoneBuildInfo.swift         # Auto-generated build-time commit hash
     │
     │   # VM core
-    ├── VPhoneVirtualMachine.swift    # @MainActor VM configuration and lifecycle
-    ├── VPhoneHardwareModel.swift     # PV=3 hardware model via Dynamic
-    ├── VPhoneVirtualMachineView.swift # Touch-enabled VZVirtualMachineView + helpers
-    ├── VPhoneError.swift             # Error types
-    │
-    │   # Guest daemon client (vsock)
-    ├── VPhoneControl.swi
+    ├── VPhoneVirtualMa
 ```
