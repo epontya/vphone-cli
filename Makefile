@@ -5,7 +5,7 @@
 # ─── Configuration (override with make VAR=value) ─────────────────
 VM_DIR      ?= vm
 CPU         ?= 4
-MEMORY      ?= 8192
+MEMORY      ?= 12288
 DISK_SIZE   ?= 64
 CFW_INPUT   ?= cfw_input
 RESTORE_UDID ?=
