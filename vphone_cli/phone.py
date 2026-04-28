@@ -44,8 +44,9 @@ class Message:
         )
 
     def __str__(self) -> str:
-        ts = self.created_at.strftime("%Y-%m-%d %H:%M")
-        arrow = "→" if self.direction == "outbound" else "←"
+        # Using 12-hour time format with AM/PM — easier to read at a glance
+        ts = self.created_at.strftime("%Y-%m-%d %I:%M %p")
+        arrow = "\u2192" if self.direction == "outbound" else "\u2190"
         return f"[{ts}] {self.from_number} {arrow} {self.to_number}: {self.body}"
 
 
@@ -76,10 +77,11 @@ class Call:
         )
 
     def __str__(self) -> str:
-        ts = self.created_at.strftime("%Y-%m-%d %H:%M")
+        # Using 12-hour time format with AM/PM — easier to read at a glance
+        ts = self.created_at.strftime("%Y-%m-%d %I:%M %p")
         mins, secs = divmod(self.duration, 60)
         duration_str = f"{mins}m{secs:02d}s" if mins else f"{secs}s"
-        arrow = "→" if self.direction == "outbound" else "←"
+        arrow = "\u2192" if self.direction == "outbound" else "\u2190"
         return (
             f"[{ts}] {self.from_number} {arrow} {self.to_number} "
             f"({self.status}, {duration_str})"
@@ -103,57 +105,4 @@ class PhoneClient:
         api_key = self.config.get("api_key")
         if not api_key:
             raise RuntimeError(
-                "API key not configured. Run: vphone config set api_key <key>"
-            )
-
-        url = f"{self._base_url.rstrip('/')}/{path.lstrip('/')}"
-        headers = {
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-        }
-
-        data = json.dumps(payload).encode() if payload else None
-        req = urllib.request.Request(url, data=data, headers=headers, method=method)
-
-        try:
-            with urllib.request.urlopen(req) as resp:
-                return json.loads(resp.read().decode())
-        except urllib.error.HTTPError as exc:
-            body = exc.read().decode(errors="replace")
-            raise RuntimeError(
-                f"API error {exc.code}: {body}"
-            ) from exc
-
-    def send_sms(self, to: str, body: str, from_number: Optional[str] = None) -> Message:
-        """Send an SMS message."""
-        from_num = from_number or self.config.get("default_number")
-        if not from_num:
-            raise RuntimeError(
-                "No sender number specified. Pass --from or set default_number in config."
-            )
-        payload = {"to": to, "from": from_num, "body": body}
-        data = self._request("POST", "/messages", payload)
-        return Message.from_dict(data)
-
-    def list_messages(
-        self, limit: int = 20, number: Optional[str] = None
-    ) -> list[Message]:
-        """Retrieve recent messages, optionally filtered by phone number."""
-        params: dict[str, Any] = {"limit": limit}
-        if number:
-            params["number"] = number
-        qs = urllib.parse.urlencode(params)
-        data = self._request("GET", f"/messages?{qs}")
-        return [Message.from_dict(m) for m in data.get("messages", [])]
-
-    def list_calls(
-        self, limit: int = 20, number: Optional[str] = None
-    ) -> list[Call]:
-        """Retrieve recent call records, optionally filtered by phone number."""
-        params: dict[str, Any] = {"limit": limit}
-        if number:
-            params["number"] = number
-        qs = urllib.parse.urlencode(params)
-        data = self._request("GET", f"/calls?{qs}")
-        return [Call.from_dict(c) for c in data.get("calls", [])]
+                "API key not c
