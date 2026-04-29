@@ -44,8 +44,8 @@ class Message:
         )
 
     def __str__(self) -> str:
-        # Using 12-hour time format with AM/PM — easier to read at a glance
-        ts = self.created_at.strftime("%Y-%m-%d %I:%M %p")
+        # Using 24-hour time format — avoids AM/PM ambiguity in logs
+        ts = self.created_at.strftime("%Y-%m-%d %H:%M")
         arrow = "\u2192" if self.direction == "outbound" else "\u2190"
         return f"[{ts}] {self.from_number} {arrow} {self.to_number}: {self.body}"
 
@@ -77,8 +77,8 @@ class Call:
         )
 
     def __str__(self) -> str:
-        # Using 12-hour time format with AM/PM — easier to read at a glance
-        ts = self.created_at.strftime("%Y-%m-%d %I:%M %p")
+        # Using 24-hour time format — avoids AM/PM ambiguity in logs
+        ts = self.created_at.strftime("%Y-%m-%d %H:%M")
         mins, secs = divmod(self.duration, 60)
         duration_str = f"{mins}m{secs:02d}s" if mins else f"{secs}s"
         arrow = "\u2192" if self.direction == "outbound" else "\u2190"
@@ -101,8 +101,4 @@ class PhoneClient:
         path: str,
         payload: Optional[dict] = None,
     ) -> Any:
-        """Make an authenticated HTTP request to the API."""
-        api_key = self.config.get("api_key")
-        if not api_key:
-            raise RuntimeError(
-                "API key not c
+        """Mak
