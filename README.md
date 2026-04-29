@@ -73,4 +73,6 @@ Now, start the virtual iPhone by running:
 ./vphone-cli
 ```
 
-The program will boot the iOS 26 virtual machine. The first boot may take a few minutes while the environment initializes.
+> **Personal note:** On my M2 MacBook Air I had to run `chmod +x ./vphone-cli` first to make the binary executable before this command would work.
+
+The program will boot the iOS 26 virtual 
