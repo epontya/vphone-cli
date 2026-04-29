@@ -14,6 +14,7 @@ Before you start, make sure your Mac meets these needs:
 
 - macOS version 13 or higher (Ventura or newer)
 - Mac with Apple Silicon (M1, M2 series) or Intel with virtualization support
+  - **Note:** If you're on an Intel Mac, you may also need Rosetta 2 installed. Run `softwareupdate --install-rosetta` in Terminal if you run into issues.
 - At least 8 GB RAM (16 GB recommended — personally I found 16 GB makes a noticeable difference in boot speed)
 - 10 GB of free disk space
 - Virtualization.framework enabled by default in macOS
@@ -76,6 +77,4 @@ The program will boot the iOS 26 virtual iPhone inside your Mac.
 
 ### Step 6: Interact with the Virtual iPhone
 
-Once running, the virtual iPhone window appears. Use your mouse and keyboard to interact just like with a normal iPhone.
-
-- Swipe and tap using your mouse
+Once running, the virtual iPhone window appears. Use your mouse and keyboard to inte
