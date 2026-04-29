@@ -73,8 +73,4 @@ Now, start the virtual iPhone by running:
 ./vphone-cli
 ```
 
-The program will boot the iOS 26 virtual iPhone inside your Mac.
-
-### Step 6: Interact with the Virtual iPhone
-
-Once running, the virtual iPhone window appears. Use your mouse and keyboard to inte
+The program will boot the iOS 26 virtual machine. The first boot may take a few minutes while the environment initializes.
